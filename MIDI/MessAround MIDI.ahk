@@ -1,4 +1,4 @@
-﻿;;"#defines"
+;;"#defines"
 DeviceID := 0
 CALLBACK_WINDOW := 0x10000
 
@@ -45,12 +45,12 @@ If result
 }
 
 
-;	#define MM_MIM_OPEN         0x3C1           /* MIDI input */
-;	#define MM_MIM_CLOSE        0x3C2
-;	#define MM_MIM_DATA         0x3C3
+; #define MM_MIM_OPEN         0x3C1           /* MIDI input */
+; #define MM_MIM_CLOSE        0x3C2
+; #define MM_MIM_DATA         0x3C3
 ;	#define MM_MIM_LONGDATA     0x3C4
-;	#define MM_MIM_ERROR        0x3C5
-;	#define MM_MIM_LONGERROR    0x3C6
+; #define MM_MIM_ERROR        0x3C5
+; #define MM_MIM_LONGERROR    0x3C6
 
 OnMessage(0x3C1, "midiInHandler")
 OnMessage(0x3C2, "midiInHandler")
@@ -101,49 +101,22 @@ midiInHandler(hInput, midiMsg, wMsg)
 	
 	;Row 1 [1]
 	if (preset = 1)
-	MsgBox, Detected
 	{
-	if (byte1 = 0)
+		MsgBox, Detected
+		if (byte1 = 0)
 		{
-		BlockInput, SendAndMouse
-		BlockInput On
-		SetKeyDelay, 0
-		MouseGetPos, xpos, ypos
-		CoordMode, Mouse, Screen
-		MouseMove, 366, 1030, 0
-		MouseClick, Left, , , 1
-		MouseMove, xpos, ypos, 0
-		BlockInput, Off
-		sleep 200
-		return
+			BlockInput, SendAndMouse
+			BlockInput On
+			SetKeyDelay, 0
+			MouseGetPos, xpos, ypos
+			CoordMode, Mouse, Screen
+			MouseMove, 366, 1030, 0
+			MouseClick, Left, , , 1
+			MouseMove, xpos, ypos, 0
+			BlockInput, Off
+			sleep 200
+			return
 		}
 	}
 	
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
