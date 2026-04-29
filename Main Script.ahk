@@ -1,4 +1,4 @@
-﻿;Variables
+;Variables
 timeline1 = 0x202020 ;Timeline Colour
 timeline2 = 0x313131 ;Timeline Colour
 timeline3 = 0x1B1B1B ;Timeline Colour
@@ -12,6 +12,10 @@ class3 = Edit2 ;Text Box Class
 class4 = DroverLord - Window Class21 ;Text Box Class
 class5 = Edit4 ;Text Box Class
 class6 = Edit8 ;Text Box Class
+
+; Mengatur mode koordinat relatif terhadap layar penuh agar klik tidak meleset
+CoordMode, Mouse, Screen
+CoordMode, Pixel, Screen
 
 F1::
 IfWinNotExist, ahk_class Premiere Pro
@@ -89,7 +93,6 @@ BlockInput, SendAndMouse ;---------------------------Sets the inputs to block (M
 BlockInput On ;--------------------------------------Blocks user input defined by the previous statement
 SetKeyDelay, 0 ;-------------------------------------Sets delay between keypresses as variable 0
 MouseGetPos, xpos, ypos ;----------------------------Obtains current mouse position and stores it as variable xpos and variable ypos (x and y coordinates)
-CoordMode, Mouse, Screen
 GoSub, +3 ;------------------------------------------Calls upon the Title Selector hotkey
 MouseMove, 1113, 152, 0 ;--------Moves cursor to position x,y
 MouseClick, Left, , , 1 ;----------------------------Left clicks the mouse once at selected point
@@ -105,7 +108,6 @@ return
 
 ;PANEL NAVIGATION/SHORTCUTS
 +1::
-;CoordMode, Mouse, Screen
 BlockInput, SendAndMouse ;---------------------------Selects the inputs to block.
 BlockInput, On ;-------------------------------------Blocks input from the user.
 SetKeyDelay, 0 ;-------------------------------------Makes key presses have 0 delay.
@@ -120,7 +122,6 @@ return
 ;DONE
 
 +2::
-CoordMode, Mouse, Screen
 BlockInput, SendAndMouse ;---------------------------Selects the inputs to block.
 BlockInput, On ;-------------------------------------Blocks input from the user.
 SetKeyDelay, 0 ;-------------------------------------Makes key presses have 0 delay.
@@ -133,7 +134,6 @@ return
 ;DONE
 
 +3::
-CoordMode, Mouse, Screen
 BlockInput, SendAndMouse ;---------------------------Selects the inputs to block.
 BlockInput, On ;-------------------------------------Blocks input from the user.
 SetKeyDelay, 0 ;-------------------------------------Makes key presses have 0 delay.
@@ -146,7 +146,6 @@ return
 ;DONE
 
 +4::
-CoordMode, Mouse, Screen
 BlockInput, SendAndMouse ;---------------------------Selects the inputs to block.
 BlockInput, On ;-------------------------------------Blocks input from the user.
 SetKeyDelay, 0 ;-------------------------------------Makes key presses have 0 delay.
@@ -234,7 +233,6 @@ BlockInput, SendAndMouse
 BlockInput, On
 SetKeyDelay, 0
 MouseGetPos, xpos, ypos
-CoordMode, Mouse, Screen
 MouseMove, -1872, 636, 0
 Click, Left
 MouseMove, xpos, ypos, 0
@@ -248,7 +246,6 @@ BlockInput, SendAndMouse
 BlockInput, On
 SetKeyDelay, 0
 MouseGetPos, xpos, ypos
-CoordMode, Mouse, Screen
 MouseMove, -1594, 636, 0
 Click, Left
 MouseMove, xpos, ypos, 0
@@ -262,7 +259,6 @@ BlockInput, SendAndMouse
 BlockInput, On
 SetKeyDelay, 0
 MousegetPos, xpos, ypos
-Coordmode, Mouse, Screen
 MouseMove, 375, 755, 0
 Click, Left
 MouseMove, xpos, ypos, 0
@@ -283,7 +279,8 @@ if (Class = class1 || Class = class2 || Class = class3 || Class = class4 || Clas
 	sendinput, {LButton}
 	return
 }
-else if (ErrorLevel = 1) and (Class != class1 || Class != class2 || Class != class3 || Class != class4 || Class != class5 || Class != class6)
+; FIXED: Changed || to &&
+else if (ErrorLevel = 1) and (Class != class1 && Class != class2 && Class != class3 && Class != class4 && Class != class5 && Class != class6)
 {
 	Suspend, Off
 	Send, {LButton down}
@@ -302,7 +299,6 @@ return
 $~`::RapidHotkey("scale""Xposition""Yposition""whatever", 1, 0.1, 1)
 
 scale:
-Coordmode, Mouse, Screen
 MouseGetPos, xpos, ypos
 MouseMove, -1718, 638, 0
 MouseClick, Left, , , 1, , D
@@ -312,7 +308,6 @@ loop {
 }
 
 Xposition:
-Coordmode, Mouse, Screen
 MouseGetPos, xpos, ypos
 MouseMove, -1716, 616, 0
 MouseClick, Left, , , 1, , D
@@ -322,7 +317,6 @@ loop {
 }
 
 Yposition:
-Coordmode, Mouse, Screen
 MouseGetPos, xpos, ypos
 MouseMove, -1665, 616, 0
 MouseClick, Left, , , 1, , D
@@ -338,27 +332,29 @@ return
 
 ;Timeline Scrubbing Mod (COURTESY OF TARANVH)
 RButton::
-MouseGetPos, xpos, ypos ;------Stores current mouse coordinates as x and y coordinates.
-PixelGetColor colour, %xpos%, %ypos%, RGB ;------------Enables AHK to know what the colour of the pixel below the mouse is at current mouse position (see above ^^)
-if (colour = timeline1 || colour = timeline2 || colour = timeline3 || colour = timeline4 || colour = timeline5 || colour = timeline6) ;----Compares colour to above defined colours.
-	Send, ^+{a} ;------------------If the colour matches, exit out of any menu.
-if (colour = timeline1 || colour = timeline2 || colour = timeline3 || colour = timeline4 || colour = timeline5 || colour = timeline6) ;----Compares colour to above defined colours. 
-{
-	click middle ;----Middle mouse highlights the timeline.
-	if GetKeyState("RButton", "P") = 1 ;-----Enables AHK to identify whether the right mouse button is being held down or not.
-		loop {
-			Send, +/ ;-----Bound in premiere to send the playhead to mouse position.
-			if GetKeyState("RButton", "P") = 0 ;-----If rmb is not held down from that point above, the loop ends.
-				{
-				Goto theEnd
-				}
-			}
-	Send {escape}
-	}
-	
-else {
- sendinput, {Rbutton} ;------Allows right mouse button normal operation.
- }
+MouseGetPos, xpos, ypos 
+PixelGetColor colour, %xpos%, %ypos%, RGB 
 
-theEnd:
+if (colour = timeline1 || colour = timeline2 || colour = timeline3 || colour = timeline4 || colour = timeline5 || colour = timeline6) 
+{
+	Send, ^+{a} 
+	click middle 
+	
+	if GetKeyState("RButton", "P") = 1 
+	{
+		loop 
+		{
+			Send, +/ 
+			if GetKeyState("RButton", "P") = 0 
+			{
+				break 
+			}
+		}
+	}
+	Send {escape} 
+}
+else 
+{
+	sendinput, {Rbutton} 
+}
 return
